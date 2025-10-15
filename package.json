@@ -1,0 +1,66 @@
+{
+  "name": "@cursorpointer/payload-translations",
+  "version": "0.1.0",
+  "description": "Payload CMS 3 plugin for managing UI translations with automatic string collection and full static generation support",
+  "keywords": [
+    "payload",
+    "payloadcms",
+    "plugin",
+    "translations",
+    "i18n",
+    "internationalization",
+    "localization",
+    "l10n"
+  ],
+  "author": "Koray Sels",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./react": {
+      "types": "./dist/react/index.d.ts",
+      "default": "./dist/react/index.js"
+    },
+    "./server": {
+      "types": "./dist/server/index.d.ts",
+      "default": "./dist/server/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "pnpm build"
+  },
+  "peerDependencies": {
+    "payload": "^3.0.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "payload": "^3.59.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.2.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:cursor-pointer/payload-translations.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cursor-pointer/payload-translations/issues"
+  },
+  "homepage": "https://github.com/cursor-pointer/payload-translations#readme"
+}
