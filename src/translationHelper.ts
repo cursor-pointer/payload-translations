@@ -24,25 +24,29 @@ function logMissingTranslations() {
   if (missingTranslations.size === 0) return
 
   console.group('🌐 Missing Translations Detected')
-  console.log('Add these to your Translations global in Payload CMS:\n')
+  console.log('Copy-paste these fields into your translationFields array:\n')
+
+  const fields: string[] = []
 
   missingTranslations.forEach((contexts, key) => {
-    console.log(`Key: "${key}"`)
-    console.log(`Used in: ${Array.from(contexts).join(', ')}`)
-    console.log('---')
+    const fieldName = key
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '_')  // Replace non-alphanumeric with underscore
+      .replace(/^_+|_+$/g, '')       // Remove leading/trailing underscores
+      .replace(/_+/g, '_')           // Replace multiple underscores with single
+
+    const fieldConfig = `  {
+    name: '${fieldName}',
+    type: 'text',
+    label: '${key}',
+    localized: true,
+    // Used in: ${Array.from(contexts).join(', ')}
+  }`
+
+    fields.push(fieldConfig)
   })
 
-  console.log('\nSuggested field structure:')
-  console.log(JSON.stringify(
-    Object.fromEntries(
-      Array.from(missingTranslations.keys()).map(key => [
-        key.toLowerCase().replace(/\s+/g, '_'),
-        key
-      ])
-    ),
-    null,
-    2
-  ))
+  console.log(fields.join(',\n'))
 
   console.groupEnd()
   missingTranslations.clear()

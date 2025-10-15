@@ -245,12 +245,29 @@ const { t } = useTranslations()
 
 // Usage
 <button>{t('Submit', 'LoginForm')}</button>
+<input placeholder={t('Enter Email', 'LoginForm')} />
 
-// Missing translations are logged in dev console:
+// Missing translations are logged in dev console in copy-pasteable format:
 // 🌐 Missing Translations Detected
-// Key: "Submit"
-// Used in: LoginForm
+// Copy-paste these fields into your translationFields array:
+//
+//   {
+//     name: 'submit',
+//     type: 'text',
+//     label: 'Submit',
+//     localized: true,
+//     // Used in: LoginForm
+//   },
+//   {
+//     name: 'enter_email',
+//     type: 'text',
+//     label: 'Enter Email',
+//     localized: true,
+//     // Used in: LoginForm
+//   }
 ```
+
+Simply copy the logged output and paste it into your `translationFields` array in your config!
 
 ### `formatDate(date, style?)`
 
