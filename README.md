@@ -95,10 +95,11 @@ export function MyComponent() {
 }
 ```
 
-**Server Components:**
+**Server Components (WPML-style - same as client!):**
 
 ```tsx
 import { getTranslations } from '@cursorpointer/payload-translations/server'
+import config from '@/payload.config'
 
 export default async function Page({
   params
@@ -106,10 +107,22 @@ export default async function Page({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  const translations = await getTranslations(locale)
+  const { t } = await getTranslations(locale, config)
 
-  return <h1>{translations.home}</h1>
+  return (
+    <div>
+      <h1>{t('Welcome to our site', 'HomePage')}</h1>
+      <button>{t('Get Started', 'HomePage')}</button>
+    </div>
+  )
 }
+```
+
+**Or use direct access if you prefer:**
+
+```tsx
+const { translations } = await getTranslations(locale, config)
+return <h1>{translations.home}</h1>  // Type-safe
 ```
 
 ### 4. Fill in translations
@@ -182,15 +195,31 @@ translationsPlugin({
 })
 ```
 
-### `getTranslations(locale)`
+### `getTranslations(locale, config)`
 
 Server-side function to fetch translations for a specific locale.
 
 ```typescript
-const translations = await getTranslations('en')
+import { getTranslations } from '@cursorpointer/payload-translations/server'
+import config from '@/payload.config'
+
+const { t, translations, formatDate, formatNumber, formatCurrency, locale } =
+  await getTranslations('en', config)
+
+// WPML-style (recommended)
+<button>{t('Submit', 'LoginForm')}</button>
+
+// Direct access (type-safe)
+<h1>{translations.home}</h1>
 ```
 
-Returns a typed object with all translation strings.
+**Returns:**
+- `t(key, context?)` - WPML-style translation function
+- `translations` - Raw translations object
+- `formatDate()` - Locale-aware date formatting
+- `formatNumber()` - Locale-aware number formatting
+- `formatCurrency()` - Locale-aware currency formatting
+- `locale` - Current locale string
 
 ### `useTranslations()`
 

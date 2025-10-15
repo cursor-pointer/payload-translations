@@ -1,106 +1,80 @@
 import { getPayload } from 'payload'
 import type { SanitizedConfig } from 'payload'
+import { createTranslationHelper, formatDate, formatNumber, formatCurrency } from '../translationHelper'
 
+// Generic interface - users should extend this in their app
 export interface Translations {
-  // Navigation
-  home: string
-  events: string
-  posts: string
-  resources: string
+  [key: string]: string
+}
 
-  // Search
-  search: string
-  searchPlaceholder: string
-  searchButton: string
-  noResults: string
-
-  // Common
-  readMore: string
-  viewAll: string
-  loading: string
-  previous: string
-  next: string
-
-  // Forms
-  submit: string
-  required: string
-  invalidEmail: string
-
-  // Events
-  upcomingEvents: string
-  pastEvents: string
-  eventDate: string
-  location: string
-
-  // Footer
-  quickLinks: string
-  followUs: string
-  visitOur: string
-  page: string
+export interface TranslationsHelper {
+  /** WPML-style translation function - works the same in server and client */
+  t: (key: string, context?: string) => string
+  /** Locale-aware date formatting */
+  formatDate: (date: Date | string, style?: 'full' | 'long' | 'medium' | 'short') => string
+  /** Locale-aware number formatting */
+  formatNumber: (num: number, options?: Intl.NumberFormatOptions) => string
+  /** Locale-aware currency formatting */
+  formatCurrency: (amount: number, currency?: string) => string
+  /** Raw translations object (for direct access if needed) */
+  translations: Translations
+  /** Current locale */
+  locale: string
 }
 
 /**
- * Get translations for a specific locale
+ * Get translations for a specific locale from Payload CMS
  * Works in Server Components and is statically generated at build time
  *
  * @example
- * // In a Server Component
- * const t = await getTranslations('en', config)
- * <h1>{t.home}</h1>
+ * // In a Server Component - WPML style (recommended)
+ * import { getTranslations } from '@cursorpointer/payload-translations/server'
+ * import config from '@/payload.config'
+ *
+ * const { t } = await getTranslations('en', config)
+ * <button>{t('Submit', 'LoginForm')}</button>
+ *
+ * @example
+ * // Direct access (if you prefer)
+ * const { translations } = await getTranslations('en', config)
+ * <h1>{translations.home}</h1>
  */
 export async function getTranslations(
-  locale: 'all' | 'en' | 'nl' | 'es' | 'fr' | 'cat' = 'en',
-  config: SanitizedConfig | Promise<SanitizedConfig>
-): Promise<Translations> {
+  locale: string = 'en',
+  config: SanitizedConfig | Promise<SanitizedConfig>,
+  slug: string = 'translations'
+): Promise<TranslationsHelper> {
   const payload = await getPayload({ config })
 
   try {
     const translations = await payload.findGlobal({
-      slug: 'translations',
-      locale,
+      slug: slug as any, // Cast to avoid GlobalSlug type constraint
+      locale: locale as any, // Cast to avoid Locale union constraint
     })
 
-    return translations as unknown as Translations
+    const translationsObj = translations as unknown as Translations
+
+    return {
+      t: createTranslationHelper(translationsObj, locale),
+      formatDate: (date, style) => formatDate(date, locale, style),
+      formatNumber: (num, options) => formatNumber(num, locale, options),
+      formatCurrency: (amount, currency) => formatCurrency(amount, locale, currency),
+      translations: translationsObj,
+      locale,
+    }
   } catch (error) {
     console.error(`Failed to fetch translations for locale: ${locale}`, error)
 
-    // Return fallback English translations
+    // Return empty translations with fallback helpers
+    const emptyTranslations: Translations = {}
+
     return {
-      // Navigation
-      home: 'Home',
-      events: 'Events',
-      posts: 'Posts',
-      resources: 'Resources',
-
-      // Search
-      search: 'Search',
-      searchPlaceholder: 'Search',
-      searchButton: 'Search',
-      noResults: 'No results found',
-
-      // Common
-      readMore: 'Read More',
-      viewAll: 'View All',
-      loading: 'Loading',
-      previous: 'Previous',
-      next: 'Next',
-
-      // Forms
-      submit: 'Submit',
-      required: 'This field is required',
-      invalidEmail: 'Invalid email address',
-
-      // Events
-      upcomingEvents: 'Upcoming Events',
-      pastEvents: 'Past Events',
-      eventDate: 'Date',
-      location: 'Location',
-
-      // Footer
-      quickLinks: 'Quick Links',
-      followUs: 'Follow Us',
-      visitOur: 'Visit our',
-      page: 'page',
+      t: createTranslationHelper(emptyTranslations, locale),
+      formatDate: (date, style) => formatDate(date, locale, style),
+      formatNumber: (num, options) => formatNumber(num, locale, options),
+      formatCurrency: (amount, currency) => formatCurrency(amount, locale, currency),
+      translations: emptyTranslations,
+      locale,
     }
   }
 }
