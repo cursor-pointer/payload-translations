@@ -1,15 +1,15 @@
-# @rumba/payload-translations
+# @cursorpointer/payload-translations
 
 > A Payload CMS 3 plugin for managing UI translations with automatic string collection and full static generation support
 
 ## Installation
 
 ```bash
-npm install @rumba/payload-translations
+npm install @cursorpointer/payload-translations
 # or
-pnpm add @rumba/payload-translations
+pnpm add @cursorpointer/payload-translations
 # or
-yarn add @rumba/payload-translations
+yarn add @cursorpointer/payload-translations
 ```
 
 ## Quick Start
@@ -19,14 +19,22 @@ yarn add @rumba/payload-translations
 ```typescript
 // payload.config.ts
 import { buildConfig } from 'payload'
-import { translationsPlugin } from '@rumba/payload-translations'
+import { translationsPlugin } from '@cursorpointer/payload-translations'
 
 export default buildConfig({
   // ... your config
   plugins: [
     translationsPlugin({
-      // Optional: Add custom translation fields
+      // Define your translation fields (required)
       customFields: [
+        {
+          label: 'Navigation',
+          fields: [
+            { name: 'home', type: 'text', localized: true, required: true },
+            { name: 'about', type: 'text', localized: true, required: true },
+            { name: 'contact', type: 'text', localized: true, required: true },
+          ]
+        },
         {
           label: 'Authentication',
           fields: [
@@ -45,8 +53,8 @@ export default buildConfig({
 
 ```tsx
 // app/[locale]/layout.tsx
-import { TranslationsProvider } from '@rumba/payload-translations/react'
-import { getTranslations } from '@rumba/payload-translations/server'
+import { TranslationsProvider } from '@cursorpointer/payload-translations/react'
+import { getTranslations } from '@cursorpointer/payload-translations/server'
 
 export default async function Layout({
   children,
@@ -72,7 +80,7 @@ export default async function Layout({
 
 ```tsx
 'use client'
-import { useTranslations } from '@rumba/payload-translations/react'
+import { useTranslations } from '@cursorpointer/payload-translations/react'
 
 export function MyComponent() {
   const { translations, t, formatDate } = useTranslations()
@@ -90,7 +98,7 @@ export function MyComponent() {
 **Server Components:**
 
 ```tsx
-import { getTranslations } from '@rumba/payload-translations/server'
+import { getTranslations } from '@cursorpointer/payload-translations/server'
 
 export default async function Page({
   params
@@ -108,31 +116,32 @@ export default async function Page({
 
 Go to `/admin/globals/translations` in your Payload admin panel and fill in translations for all locales.
 
-## Default Translation Fields
+## Configuration
 
-The plugin comes with sensible defaults for common UI strings:
-
-- **Navigation**: home, events, posts, resources
-- **Search**: searchPlaceholder, searchButton, noResults
-- **Common**: readMore, viewAll, loading, previous, next
-- **Forms**: submit, required, invalidEmail
-- **Events**: upcomingEvents, pastEvents, eventDate, location
-
-You can disable defaults and provide your own:
+The plugin is fully generic - you define all translation fields for your project:
 
 ```typescript
 translationsPlugin({
-  includeDefaults: false,
   customFields: [
     {
-      label: 'My Custom Translations',
+      label: 'Navigation',
       fields: [
-        // Your fields
+        { name: 'home', type: 'text', localized: true, required: true },
+        { name: 'about', type: 'text', localized: true, required: true },
+      ]
+    },
+    {
+      label: 'Forms',
+      fields: [
+        { name: 'submit', type: 'text', localized: true, required: true },
+        { name: 'cancel', type: 'text', localized: true, required: true },
       ]
     }
   ]
 })
 ```
+
+Organize fields into tabs for better admin UX.
 
 ## API Reference
 
@@ -148,15 +157,29 @@ translationsPlugin({
   // The slug for the translations global (default: 'translations')
   slug?: string
 
-  // Additional custom translation fields to add
-  customFields?: Array<{
-    label: string
-    fields: Field[]
+  // Translation field tabs (required)
+  // Each tab groups related translation fields
+  customFields: Array<{
+    label: string        // Tab label in admin
+    fields: Field[]      // Payload field definitions
   }>
-
-  // Whether to include default translation fields (default: true)
-  includeDefaults?: boolean
 }
+```
+
+**Example:**
+```typescript
+translationsPlugin({
+  customFields: [
+    {
+      label: 'UI Components',
+      fields: [
+        { name: 'loading', type: 'text', localized: true, required: true },
+        { name: 'error', type: 'text', localized: true, required: true },
+        { name: 'success', type: 'text', localized: true, required: true },
+      ]
+    }
+  ]
+})
 ```
 
 ### `getTranslations(locale)`
