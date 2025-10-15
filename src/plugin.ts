@@ -14,10 +14,20 @@ export interface TranslationsPluginOptions {
   slug?: string
 
   /**
+   * Whether to use tabs for organizing fields
+   * @default true
+   */
+  useTabs?: boolean
+
+  /**
    * Translation field tabs to add to the translations global
    * Each tab contains a group of related translation fields
    *
+   * When useTabs is true, pass an array of tab objects.
+   * When useTabs is false, pass a Field[] directly.
+   *
    * @example
+   * With tabs (useTabs: true):
    * ```ts
    * customFields: [
    *   {
@@ -29,11 +39,19 @@ export interface TranslationsPluginOptions {
    *   }
    * ]
    * ```
+   *
+   * Without tabs (useTabs: false):
+   * ```ts
+   * customFields: [
+   *   { type: 'collapsible', label: 'Navigation', fields: [...] },
+   *   { name: 'home', type: 'text', localized: true, required: true },
+   * ]
+   * ```
    */
   customFields: Array<{
     label: string
     fields: Field[]
-  }>
+  }> | Field[]
 }
 
 /**
@@ -70,6 +88,7 @@ export const translationsPlugin = (
     enabled = true,
     slug = 'translations',
     customFields,
+    useTabs = true,
   } = options
 
   return (config: Config): Config => {
@@ -85,6 +104,25 @@ export const translationsPlugin = (
       )
     }
 
+    // Determine fields structure based on useTabs option
+    let fields: Field[]
+
+    if (useTabs) {
+      // Traditional tabs mode
+      fields = [
+        {
+          type: 'tabs' as const,
+          tabs: customFields as Array<{
+            label: string
+            fields: Field[]
+          }>,
+        },
+      ]
+    } else {
+      // Direct fields mode (no tabs)
+      fields = customFields as Field[]
+    }
+
     // Add the translations global to the config
     const translationsGlobal = {
       slug,
@@ -92,12 +130,7 @@ export const translationsPlugin = (
       access: {
         read: () => true,
       },
-      fields: [
-        {
-          type: 'tabs' as const,
-          tabs: customFields,
-        },
-      ],
+      fields,
     }
 
     return {
