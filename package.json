@@ -1,6 +1,6 @@
 {
   "name": "@cursorpointer/payload-translations",
-  "version": "0.2.2",
+  "version": "0.4.0",
   "description": "Payload CMS 3 plugin for managing UI translations with automatic string collection and full static generation support",
   "keywords": [
     "payload",

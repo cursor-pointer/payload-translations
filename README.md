@@ -129,6 +129,73 @@ return <h1>{translations.home}</h1>  // Type-safe
 
 Go to `/admin/globals/translations` in your Payload admin panel and fill in translations for all locales.
 
+## Common Use Cases
+
+### Variables in translations
+
+**ICU MessageFormat (Object):**
+```tsx
+// In your CMS, add field 'welcomeMessage' with value:
+// "Welcome back, {name}!"
+
+const { t } = useTranslations()
+<h1>{t('welcomeMessage', { name: user.name })}</h1>
+// Output: "Welcome back, John!"
+```
+
+**Sprintf Style (Array):**
+```tsx
+// In your CMS, add field 'welcomeMessage' with value:
+// "Welcome back, %s!"
+
+const { t } = useTranslations()
+<h1>{t('welcomeMessage', [user.name])}</h1>
+// Output: "Welcome back, John!"
+```
+
+### Pluralization
+
+**ICU MessageFormat (with automatic locale rules):**
+```tsx
+// In your CMS, add field 'cartItems' with value:
+// "{count, plural, zero {No items} one {# item} other {# items}}"
+
+const { t } = useTranslations()
+<p>{t('cartItems', { count: 0 })}</p>  // "No items"
+<p>{t('cartItems', { count: 1 })}</p>  // "1 item"
+<p>{t('cartItems', { count: 5 })}</p>  // "5 items"
+```
+
+**Sprintf Style (simpler but manual):**
+```tsx
+// Store both singular and plural in CMS, choose manually
+const { t } = useTranslations()
+const count = 5
+<p>{t(count === 1 ? 'item' : 'items', [count])}</p>  // "5 items"
+```
+
+### Dynamic messages
+
+**ICU MessageFormat:**
+```tsx
+// In your CMS, add field 'notification' with value:
+// "{user} liked your {type}"
+
+const { t } = useTranslations()
+<p>{t('notification', { user: 'Sarah', type: 'post' })}</p>
+// Output: "Sarah liked your post"
+```
+
+**Sprintf Style:**
+```tsx
+// In your CMS, add field 'notification' with value:
+// "%s liked your %s"
+
+const { t } = useTranslations()
+<p>{t('notification', ['Sarah', 'post'])}</p>
+// Output: "Sarah liked your post"
+```
+
 ## Configuration
 
 The plugin is fully generic - you define all translation fields for your project:
@@ -236,35 +303,92 @@ const {
 } = useTranslations()
 ```
 
-### `t(key, context?)`
+### `t(key, contextOrVars?, vars?)`
 
-WPML-style translation helper that auto-collects missing translations in development:
+WPML-style translation helper with **dual interpolation support** - use whichever style you prefer:
+
+#### **ICU MessageFormat Style (Object)** - Recommended
+
+Modern, explicit approach with named placeholders:
 
 ```typescript
 const { t } = useTranslations()
 
-// Usage
-<button>{t('Submit', 'LoginForm')}</button>
-<input placeholder={t('Enter Email', 'LoginForm')} />
+// Simple variables
+<p>{t('Welcome {name}', 'HomePage', { name: 'John' })}</p>
+// Output: "Welcome John"
 
-// Missing translations are logged in dev console in copy-pasteable format:
-// 🌐 Missing Translations Detected
-// Copy-paste these fields into your translationFields array:
-//
-//   {
-//     name: 'submit',
-//     type: 'text',
-//     label: 'Submit',
-//     localized: true,
-//     // Used in: LoginForm
-//   },
-//   {
-//     name: 'enterEmail',
-//     type: 'text',
-//     label: 'Enter Email',
-//     localized: true,
-//     // Used in: LoginForm
-//   }
+// Without context
+<p>{t('Hello {username}', { username: 'Alice' })}</p>
+// Output: "Hello Alice"
+
+// Pluralization with automatic locale rules
+<p>{t('{count, plural, one {# item} other {# items}}', 'Cart', { count: 1 })}</p>
+// Output: "1 item"
+
+<p>{t('{count, plural, one {# item} other {# items}}', 'Cart', { count: 5 })}</p>
+// Output: "5 items"
+
+// Complex pluralization
+<p>{t('You have {count, plural, zero {no messages} one {# message} other {# messages}}', { count: 0 })}</p>
+// Output: "You have no messages"
+```
+
+#### **Sprintf Style (Array)** - WPML Compatible
+
+Familiar WordPress-style positional arguments:
+
+```typescript
+// Simple string substitution
+<p>{t('Welcome %s', 'HomePage', ['John'])}</p>
+// Output: "Welcome John"
+
+// Without context
+<p>{t('Hello %s', ['Alice'])}</p>
+// Output: "Hello Alice"
+
+// Multiple values
+<p>{t('Hello %s, you have %d new messages', ['John', 5])}</p>
+// Output: "Hello John, you have 5 new messages"
+
+// Number formatting
+<p>{t('Total: %d items at $%f each', [42, 19.99])}</p>
+// Output: "Total: 42 items at $19.99 each"
+```
+
+**Format Specifiers:**
+- `%s` - String
+- `%d` / `%i` - Integer (rounds down)
+- `%f` / `%u` - Float/Number
+
+#### **How It Works**
+
+The plugin automatically detects which style you're using:
+
+- **Pass an object** `{ name: 'John' }` → ICU MessageFormat
+- **Pass an array** `['John']` → Sprintf style
+
+No configuration needed - just use whichever style feels natural!
+
+#### **ICU MessageFormat Features**
+
+- **Simple variables**: `{variableName}`
+- **Pluralization**: `{count, plural, zero {...} one {...} other {...}}`
+- **Automatic plural rules**: Uses `Intl.PluralRules` for locale-aware pluralization
+
+**Missing translations are logged in dev console:**
+
+```
+🌐 Missing Translations Detected
+Copy-paste these fields into your translationFields array:
+
+  {
+    name: 'welcome',
+    type: 'text',
+    label: 'Welcome {name}',
+    localized: true,
+    // Used in: HomePage
+  }
 ```
 
 Simply copy the logged output and paste it into your `translationFields` array in your config!
