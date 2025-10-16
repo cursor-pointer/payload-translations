@@ -1,5 +1,5 @@
 {
-  "name": "@cursorpointer/payload-translations",
+  "name": "payload-translations",
   "version": "0.4.0",
   "description": "Payload CMS 3 plugin for managing UI translations with automatic string collection and full static generation support",
   "keywords": [
@@ -54,9 +54,6 @@
     "react-dom": "^19.2.0",
     "typescript": "^5.7.0",
     "vitest": "^3.2.3"
-  },
-  "publishConfig": {
-    "access": "public"
   },
   "repository": {
     "type": "git",

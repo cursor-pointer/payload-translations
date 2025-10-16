@@ -1,15 +1,15 @@
-# @cursorpointer/payload-translations
+# payload-translations
 
 > A Payload CMS 3 plugin for managing UI translations with automatic string collection and full static generation support
 
 ## Installation
 
 ```bash
-npm install @cursorpointer/payload-translations
+npm install payload-translations
 # or
-pnpm add @cursorpointer/payload-translations
+pnpm add payload-translations
 # or
-yarn add @cursorpointer/payload-translations
+yarn add payload-translations
 ```
 
 ## Quick Start
@@ -19,7 +19,7 @@ yarn add @cursorpointer/payload-translations
 ```typescript
 // payload.config.ts
 import { buildConfig } from 'payload'
-import { translationsPlugin } from '@cursorpointer/payload-translations'
+import { translationsPlugin } from 'payload-translations'
 
 export default buildConfig({
   // ... your config
@@ -53,8 +53,8 @@ export default buildConfig({
 
 ```tsx
 // app/[locale]/layout.tsx
-import { TranslationsProvider } from '@cursorpointer/payload-translations/react'
-import { getTranslations } from '@cursorpointer/payload-translations/server'
+import { TranslationsProvider } from 'payload-translations/react'
+import { getTranslations } from 'payload-translations/server'
 
 export default async function Layout({
   children,
@@ -80,7 +80,7 @@ export default async function Layout({
 
 ```tsx
 'use client'
-import { useTranslations } from '@cursorpointer/payload-translations/react'
+import { useTranslations } from 'payload-translations/react'
 
 export function MyComponent() {
   const { translations, t, formatDate } = useTranslations()
@@ -98,7 +98,7 @@ export function MyComponent() {
 **Server Components (WPML-style - same as client!):**
 
 ```tsx
-import { getTranslations } from '@cursorpointer/payload-translations/server'
+import { getTranslations } from 'payload-translations/server'
 import config from '@/payload.config'
 
 export default async function Page({
@@ -267,7 +267,7 @@ translationsPlugin({
 Server-side function to fetch translations for a specific locale.
 
 ```typescript
-import { getTranslations } from '@cursorpointer/payload-translations/server'
+import { getTranslations } from 'payload-translations/server'
 import config from '@/payload.config'
 
 const { t, translations, formatDate, formatNumber, formatCurrency, locale } =
