@@ -33,7 +33,7 @@ async function scanFiles(pattern: string = 'src/**/*.{ts,tsx,js,jsx}'): Promise<
       let match
       while ((match = tCallRegex.exec(line)) !== null) {
         const key = match[1]
-        const context = match[2] || 'Unknown'
+        const context = match[2] || 'General'
 
         // Skip if key contains placeholders (already in CMS) or is a variable
         if (!key.includes('{') && !key.includes('%') && key.length < 100) {
@@ -136,9 +136,99 @@ function findTranslationFile(): string | null {
 }
 
 /**
+ * Extract existing field names from translation file
+ */
+function getExistingFields(content: string): Set<string> {
+  const existingFields = new Set<string>()
+
+  // Match field names in the format: name: 'fieldName'
+  const nameRegex = /name:\s*['"]([^'"]+)['"]/g
+  let match
+
+  while ((match = nameRegex.exec(content)) !== null) {
+    existingFields.add(match[1])
+  }
+
+  return existingFields
+}
+
+/**
+ * Extract existing sections/contexts from translation file
+ */
+function getExistingSections(content: string): Set<string> {
+  const sections = new Set<string>()
+
+  // Match collapsible labels: label: 'SectionName'
+  const labelRegex = /type:\s*['"]collapsible['"],\s*label:\s*['"]([^'"]+)['"]/g
+  let match
+
+  while ((match = labelRegex.exec(content)) !== null) {
+    sections.add(match[1])
+  }
+
+  return sections
+}
+
+/**
+ * Generate field definitions, filtering out duplicates
+ */
+function generateFieldDefinitionsNoDuplicates(
+  translations: TranslationCall[],
+  existingFields: Set<string>,
+  existingSections: Set<string>
+): { output: string; addedCount: number } {
+  const grouped = groupByContext(translations)
+  const output: string[] = []
+  let addedCount = 0
+
+  grouped.forEach((keys, context) => {
+    // Filter out existing fields
+    const newKeys = Array.from(keys).filter(key => {
+      const fieldName = toCamelCase(key)
+      return !existingFields.has(fieldName)
+    })
+
+    if (newKeys.length === 0) {
+      return // Skip section if all fields already exist
+    }
+
+    // Check if section already exists
+    const sectionExists = existingSections.has(context)
+
+    if (sectionExists) {
+      console.log(`   Skipping section '${context}' (already exists, but may have new fields)`)
+      // TODO: Could enhance to add fields to existing sections
+      return
+    }
+
+    output.push(`  {`)
+    output.push(`    type: 'collapsible',`)
+    output.push(`    label: '${context}',`)
+    output.push(`    admin: { initCollapsed: true },`)
+    output.push(`    fields: [`)
+
+    newKeys.forEach((key) => {
+      const fieldName = toCamelCase(key)
+      output.push(`      {`)
+      output.push(`        name: '${fieldName}',`)
+      output.push(`        type: 'text',`)
+      output.push(`        label: '${key}',`)
+      output.push(`        localized: true,`)
+      output.push(`      },`)
+      addedCount++
+    })
+
+    output.push(`    ],`)
+    output.push(`  },`)
+  })
+
+  return { output: output.join('\n'), addedCount }
+}
+
+/**
  * Append new fields to translation file
  */
-function appendToFile(filePath: string, newFields: string): void {
+function appendToFile(filePath: string, translations: TranslationCall[]): void {
   let content = fs.readFileSync(filePath, 'utf-8')
 
   // Find the export statement (array or const declaration)
@@ -147,6 +237,24 @@ function appendToFile(filePath: string, newFields: string): void {
   if (!exportMatch) {
     console.error('❌ Could not find translation fields array in file')
     console.error('   Please add the fields manually')
+    return
+  }
+
+  // Get existing fields and sections to avoid duplicates
+  const existingFields = getExistingFields(content)
+  const existingSections = getExistingSections(content)
+
+  console.log(`   Found ${existingFields.size} existing fields in ${existingSections.size} sections`)
+
+  // Generate only new fields
+  const { output: newFields, addedCount } = generateFieldDefinitionsNoDuplicates(
+    translations,
+    existingFields,
+    existingSections
+  )
+
+  if (addedCount === 0) {
+    console.log('✅ No new fields to add - all translations already exist!')
     return
   }
 
@@ -182,7 +290,7 @@ function appendToFile(filePath: string, newFields: string): void {
   const newContent = before + newFields + '\n' + after
 
   fs.writeFileSync(filePath, newContent)
-  console.log(`\n✅ Added new fields to ${filePath}`)
+  console.log(`\n✅ Added ${addedCount} new fields to ${filePath}`)
 }
 
 /**
@@ -247,7 +355,7 @@ async function main() {
       console.log('\n📋 Here are the fields to add manually:\n')
       console.log(newFields)
     } else {
-      appendToFile(targetFile, newFields)
+      appendToFile(targetFile, Array.from(uniqueKeys.values()))
       console.log(`\n💡 Don't forget to fill in the translations in your Payload admin!`)
     }
   } else {
