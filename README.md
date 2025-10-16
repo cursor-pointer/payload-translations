@@ -259,7 +259,7 @@ const { t } = useTranslations()
 //     // Used in: LoginForm
 //   },
 //   {
-//     name: 'enter_email',
+//     name: 'enterEmail',
 //     type: 'text',
 //     label: 'Enter Email',
 //     localized: true,

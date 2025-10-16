@@ -29,11 +29,16 @@ function logMissingTranslations() {
   const fields: string[] = []
 
   missingTranslations.forEach((contexts, key) => {
+    // Convert to camelCase to match common Payload naming conventions
     const fieldName = key
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '_')  // Replace non-alphanumeric with underscore
-      .replace(/^_+|_+$/g, '')       // Remove leading/trailing underscores
-      .replace(/_+/g, '_')           // Replace multiple underscores with single
+      .replace(/[^a-zA-Z0-9\s]+/g, '') // Remove special chars but keep spaces
+      .split(/\s+/)                     // Split on spaces
+      .map((word, index) => {
+        const lower = word.toLowerCase()
+        // First word lowercase, rest capitalize first letter
+        return index === 0 ? lower : lower.charAt(0).toUpperCase() + lower.slice(1)
+      })
+      .join('')
 
     const fieldConfig = `  {
     name: '${fieldName}',
