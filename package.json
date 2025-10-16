@@ -55,6 +55,9 @@
     "typescript": "^5.7.0",
     "vitest": "^3.2.3"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/cursor-pointer/payload-translations.git"
