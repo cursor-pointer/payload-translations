@@ -5,12 +5,15 @@
   "keywords": [
     "payload",
     "payloadcms",
+    "payload-plugin",
     "plugin",
     "translations",
     "i18n",
     "internationalization",
     "localization",
-    "l10n"
+    "l10n",
+    "wpml",
+    "headless-cms"
   ],
   "author": "Koray Sels",
   "license": "MIT",

@@ -98,7 +98,7 @@ export const translationsPlugin = (
     // Users must provide their own customFields
     if (customFields.length === 0) {
       console.warn(
-        '[@cursorpointer/payload-translations] No customFields provided. ' +
+        '[payload-translations] No customFields provided. ' +
         'The translations global will be created but will be empty. ' +
         'Please configure translation fields in your plugin options.'
       )

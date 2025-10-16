@@ -232,7 +232,8 @@ function appendToFile(filePath: string, translations: TranslationCall[]): void {
   let content = fs.readFileSync(filePath, 'utf-8')
 
   // Find the export statement (array or const declaration)
-  const exportMatch = content.match(/export\s+const\s+\w+\s*[:=]\s*\[/)
+  // Supports both: export const foo = [ and export const foo: Type[] = [
+  const exportMatch = content.match(/export\s+const\s+\w+\s*(?::\s*[\w\[\]<>]+)?\s*=\s*\[/)
 
   if (!exportMatch) {
     console.error('❌ Could not find translation fields array in file')
