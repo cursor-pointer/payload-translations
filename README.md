@@ -477,6 +477,7 @@ MIT
 
 ## Support
 
-- [GitHub Issues](https://github.com/yourname/payload-translations/issues)
-- [Documentation](https://github.com/yourname/payload-translations)
+- [GitHub Issues](https://github.com/cursor-pointer/payload-translations/issues)
+- [Documentation](https://github.com/cursor-pointer/payload-translations)
+- [npm Package](https://www.npmjs.com/package/payload-translations)
 - [Payload CMS Discord](https://discord.gg/payload)
