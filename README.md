@@ -484,14 +484,17 @@ Simply copy-paste the output into your `translationFields` array!
 **Usage examples:**
 
 ```bash
-# Scan default src directory
+# Scan and display fields (copy-paste required)
 npx payload-translations scan
 
-# Scan specific directory
-npx payload-translations scan "components/**/*.tsx"
+# Automatically append to your translation fields file
+npx payload-translations scan --write
 
-# Scan multiple patterns
-npx payload-translations scan "src/**/*.{ts,tsx}"
+# Specify a custom file to append to
+npx payload-translations scan --write src/my-translations.ts
+
+# Scan specific directory and auto-write
+npx payload-translations scan "components/**/*.tsx" --write
 ```
 
 **How it works:**
@@ -499,8 +502,19 @@ npx payload-translations scan "src/**/*.{ts,tsx}"
 1. Scans your code for `t('key')` and `t('key', 'Context')` calls
 2. Groups translations by context (component name)
 3. Converts keys to camelCase field names
-4. Outputs ready-to-use Payload field definitions
-5. Automatically organizes fields into collapsible groups
+4. Generates ready-to-use Payload field definitions
+5. With `--write`: Automatically appends new fields to your file
+6. Automatically organizes fields into collapsible groups
+
+**Auto-detection of translation files:**
+
+When using `--write` without specifying a file, the CLI looks for:
+- `src/translations/fields.ts`
+- `src/translations/fields.js`
+- `src/translations/config.ts`
+- `src/translations/config.js`
+- `translations/fields.ts`
+- `translations/fields.js`
 
 ### Run Tests
 
