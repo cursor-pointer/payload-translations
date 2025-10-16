@@ -57,7 +57,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:cursor-pointer/payload-translations.git"
+    "url": "git+ssh://git@github.com/cursor-pointer/payload-translations.git"
   },
   "bugs": {
     "url": "https://github.com/cursor-pointer/payload-translations/issues"
