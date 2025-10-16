@@ -2,6 +2,17 @@
 
 > A Payload CMS 3 plugin for managing UI translations with automatic string collection and full static generation support
 
+## Features
+
+✨ **Automatic Field Generation** - CLI scanner finds all `t()` calls and generates field definitions
+🌐 **Dual Interpolation** - Supports both ICU MessageFormat and sprintf-style variables
+📝 **WPML-Style** - Familiar `t('key', 'Context')` API for easy adoption
+🎯 **Type-Safe** - Full TypeScript support with autocomplete
+⚡ **Zero Runtime Overhead** - All translations fetched at build time
+🚀 **SSG Compatible** - Works with Next.js static generation
+📦 **Tiny Bundle** - ~2KB gzipped
+🔍 **Missing Translation Detection** - Automatically logs missing translations in dev
+
 ## Installation
 
 ```bash
@@ -430,13 +441,66 @@ formatCurrency(99.99, 'USD') // "$99.99"
 
 ## Development Tools
 
-### Scan for Hardcoded Strings
+### Automatically Generate Translation Fields
+
+The plugin includes a CLI scanner that finds all `t()` calls in your codebase and generates the field definitions for you:
 
 ```bash
-pnpm run scan:translations
+npx payload-translations scan [pattern]
 ```
 
-Scans your codebase for hardcoded strings that should be translated.
+**Default pattern**: `src/**/*.{ts,tsx,js,jsx}`
+
+**Example output:**
+
+```
+🔍 Scanning for translation calls...
+
+📝 Found 14 unique translation calls:
+
+  LoginForm: 1 translations
+  HomePage: 2 translations
+  Footer: 4 translations
+
+📋 Copy these field definitions to your translation config:
+
+  {
+    type: 'collapsible',
+    label: 'LoginForm',
+    admin: { initCollapsed: true },
+    fields: [
+      {
+        name: 'submit',
+        type: 'text',
+        label: 'Submit',
+        localized: true,
+      },
+    ],
+  },
+```
+
+Simply copy-paste the output into your `translationFields` array!
+
+**Usage examples:**
+
+```bash
+# Scan default src directory
+npx payload-translations scan
+
+# Scan specific directory
+npx payload-translations scan "components/**/*.tsx"
+
+# Scan multiple patterns
+npx payload-translations scan "src/**/*.{ts,tsx}"
+```
+
+**How it works:**
+
+1. Scans your code for `t('key')` and `t('key', 'Context')` calls
+2. Groups translations by context (component name)
+3. Converts keys to camelCase field names
+4. Outputs ready-to-use Payload field definitions
+5. Automatically organizes fields into collapsible groups
 
 ### Run Tests
 
