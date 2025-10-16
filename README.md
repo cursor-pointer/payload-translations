@@ -4,14 +4,14 @@
 
 ## Features
 
-✨ **Automatic Field Generation** - CLI scanner finds all `t()` calls and generates field definitions
-🌐 **Dual Interpolation** - Supports both ICU MessageFormat and sprintf-style variables
-📝 **WPML-Style** - Familiar `t('key', 'Context')` API for easy adoption
-🎯 **Type-Safe** - Full TypeScript support with autocomplete
-⚡ **Zero Runtime Overhead** - All translations fetched at build time
-🚀 **SSG Compatible** - Works with Next.js static generation
-📦 **Tiny Bundle** - ~2KB gzipped
-🔍 **Missing Translation Detection** - Automatically logs missing translations in dev
+- ✨ **Automatic Field Generation** - CLI scanner finds all `t()` calls and generates field definitions
+- 🌐 **Dual Interpolation** - Supports both ICU MessageFormat and sprintf-style variables
+- 📝 **Familiar-Style** - Familiar `t('key', 'Context')` API for easy adoption (if you used WPML or Polylang in the past)
+- 🎯 **Type-Safe** - Full TypeScript support with autocomplete
+- ⚡ **Zero Runtime Overhead** - All translations fetched at build time
+- 🚀 **SSG Compatible** - Works with Next.js static generation
+- 📦 **Tiny Bundle** - ~2KB gzipped
+- 🔍 **Missing Translation Detection** - Automatically logs missing translations in dev
 
 ## Installation
 
