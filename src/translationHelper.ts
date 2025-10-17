@@ -194,7 +194,7 @@ export function createTranslationHelper(translations: Translations, locale: stri
     vars?: Record<string, any> | any[]
   ): string {
     // Parse arguments (context is optional)
-    let context = 'Unknown'
+    let context = 'General'
     let variables: Record<string, any> | any[] = {}
 
     if (typeof contextOrVars === 'string') {

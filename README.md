@@ -29,6 +29,11 @@
   - [Run Tests](#run-tests)
 - [TypeScript Support](#typescript-support)
 - [Performance](#performance)
+- [Translation Updates & Caching](#translation-updates--caching)
+  - [How it Works](#how-it-works)
+  - [Automatic Revalidation (Default)](#automatic-revalidation-default)
+  - [Disabling Automatic Revalidation](#disabling-automatic-revalidation)
+  - [Other Strategies](#other-strategies)
 - [Examples](#examples)
 - [License](#license)
 - [Support](#support)
@@ -575,6 +580,72 @@ pnpm payload generate:types
 - 🚀 **Fully static** - Works with Next.js static generation
 - 📦 **Small bundle** - ~2KB gzipped
 - 🎯 **No hydration issues** - Server and client stay in sync
+
+## Translation Updates & Caching
+
+### How it Works
+
+By default, translations are fetched when pages are rendered. In production with Next.js static generation:
+- Translations are fetched at **build time**
+- Results are cached in the static HTML
+- Changes in Payload admin require revalidation to appear
+
+### Automatic Revalidation (Default)
+
+The plugin automatically revalidates all pages when translations change. **This is enabled by default and requires zero configuration:**
+
+```typescript
+translationsPlugin({
+  revalidateOnChange: true, // ← Default! No setup needed
+  customFields: [/* ... */]
+})
+```
+
+**How it works automatically:**
+
+When you update translations in the Payload admin, the plugin:
+1. Detects the change via an internal `afterChange` hook
+2. Calls `revalidatePath('/', 'layout')` to revalidate all pages
+3. Next.js regenerates pages with the new translations
+4. Changes appear immediately - **no rebuild or app code changes required!**
+
+**✨ You don't need to add any hooks or code to your app - it just works!**
+
+### Disabling Automatic Revalidation
+
+If you prefer manual control or aren't using Next.js:
+
+```typescript
+translationsPlugin({
+  revalidateOnChange: false, // Disable auto-revalidation
+  customFields: [/* ... */]
+})
+```
+
+### Other Strategies
+
+**Time-Based ISR:**
+```typescript
+// In your page/layout
+export const revalidate = 3600 // Revalidate every hour
+```
+
+**Manual On-Demand Revalidation:**
+```typescript
+// Create a webhook endpoint
+import { revalidatePath } from 'next/cache'
+
+export async function POST() {
+  revalidatePath('/', 'layout')
+  return Response.json({ revalidated: true })
+}
+```
+
+**Dynamic Rendering (always fresh):**
+```typescript
+// Force dynamic rendering for a specific page
+export const dynamic = 'force-dynamic'
+```
 
 ## Examples
 

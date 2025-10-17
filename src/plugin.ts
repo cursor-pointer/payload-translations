@@ -20,6 +20,13 @@ export interface TranslationsPluginOptions {
   useTabs?: boolean
 
   /**
+   * Whether to automatically revalidate pages when translations change (Next.js only)
+   * Enables on-demand revalidation so translation updates appear immediately without rebuilding
+   * @default true
+   */
+  revalidateOnChange?: boolean
+
+  /**
    * Translation field tabs to add to the translations global
    * Each tab contains a group of related translation fields
    *
@@ -89,6 +96,7 @@ export const translationsPlugin = (
     slug = 'translations',
     customFields,
     useTabs = true,
+    revalidateOnChange = true,
   } = options
 
   return (config: Config): Config => {
@@ -123,6 +131,33 @@ export const translationsPlugin = (
       fields = customFields as Field[]
     }
 
+    // Optionally add revalidation hook for Next.js
+    const hooks: any = {}
+    if (revalidateOnChange) {
+      hooks.afterChange = [
+        async ({ doc, req }: any) => {
+          // Only revalidate in Next.js context
+          if (typeof window === 'undefined') {
+            try {
+              // Dynamic import to avoid issues in non-Next.js environments
+              const { revalidatePath } = await import('next/cache')
+
+              // Revalidate all pages since translations are used everywhere
+              revalidatePath('/', 'layout')
+
+              console.log('[payload-translations] ✅ Revalidated all pages after translation update')
+            } catch (error) {
+              // Silently fail if not in Next.js environment
+              if (process.env.NODE_ENV === 'development') {
+                console.log('[payload-translations] Revalidation skipped (not in Next.js environment)')
+              }
+            }
+          }
+          return doc
+        },
+      ]
+    }
+
     // Add the translations global to the config
     const translationsGlobal = {
       slug,
@@ -131,6 +166,7 @@ export const translationsPlugin = (
         read: () => true,
       },
       fields,
+      hooks,
     }
 
     return {
