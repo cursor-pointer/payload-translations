@@ -2,6 +2,37 @@
 
 > A Payload CMS 3 plugin for managing UI translations with automatic string collection and full static generation support
 
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+  - [1. Add the plugin to your Payload config](#1-add-the-plugin-to-your-payload-config)
+  - [2. Set up the translations provider](#2-set-up-the-translations-provider-in-your-layout)
+  - [3. Use translations in your components](#3-use-translations-in-your-components)
+  - [4. Fill in translations](#4-fill-in-translations)
+- [Common Use Cases](#common-use-cases)
+  - [Variables in translations](#variables-in-translations)
+  - [Pluralization](#pluralization)
+  - [Dynamic messages](#dynamic-messages)
+- [Configuration](#configuration)
+- [API Reference](#api-reference)
+  - [`translationsPlugin(options)`](#translationspluginoptions)
+  - [`getTranslations(locale, config)`](#gettranslationslocale-config)
+  - [`useTranslations()`](#usetranslations)
+  - [`t(key, contextOrVars?, vars?)`](#tkey-contextorvars-vars)
+  - [`formatDate(date, style?)`](#formatdatedate-style)
+  - [`formatNumber(num, options?)`](#formatnumbernum-options)
+  - [`formatCurrency(amount, currency?)`](#formatcurrencyamount-currency)
+- [Development Tools](#development-tools)
+  - [Automatically Generate Translation Fields](#automatically-generate-translation-fields)
+  - [Run Tests](#run-tests)
+- [TypeScript Support](#typescript-support)
+- [Performance](#performance)
+- [Examples](#examples)
+- [License](#license)
+- [Support](#support)
+
 ## Features
 
 - ✨ **Automatic Field Generation** - CLI scanner finds all `t()` calls and generates field definitions
