@@ -218,8 +218,8 @@ export function createTranslationHelper(translations: Translations, locale: stri
       if (value === undefined) break
     }
 
-    // If found, interpolate and return it
-    if (typeof value === 'string') {
+    // If found and not empty, interpolate and return it
+    if (typeof value === 'string' && value.trim() !== '') {
       return interpolate(value, variables, locale)
     }
 
