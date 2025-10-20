@@ -55,10 +55,12 @@ export interface TranslationsPluginOptions {
    * ]
    * ```
    */
-  customFields: Array<{
-    label: string
-    fields: Field[]
-  }> | Field[]
+  customFields:
+    | Array<{
+        label: string
+        fields: Field[]
+      }>
+    | Field[]
 }
 
 /**
@@ -88,9 +90,7 @@ export interface TranslationsPluginOptions {
  * })
  * ```
  */
-export const translationsPlugin = (
-  options: TranslationsPluginOptions
-): Plugin => {
+export const translationsPlugin = (options: TranslationsPluginOptions): Plugin => {
   const {
     enabled = true,
     slug = 'translations',
@@ -107,8 +107,8 @@ export const translationsPlugin = (
     if (customFields.length === 0) {
       console.warn(
         '[payload-translations] No customFields provided. ' +
-        'The translations global will be created but will be empty. ' +
-        'Please configure translation fields in your plugin options.'
+          'The translations global will be created but will be empty. ' +
+          'Please configure translation fields in your plugin options.',
       )
     }
 
@@ -145,11 +145,15 @@ export const translationsPlugin = (
               // Revalidate all pages since translations are used everywhere
               revalidatePath('/', 'layout')
 
-              console.log('[payload-translations] ✅ Revalidated all pages after translation update')
+              console.log(
+                '[payload-translations] ✅ Revalidated all pages after translation update',
+              )
             } catch (error) {
               // Silently fail if not in Next.js environment
               if (process.env.NODE_ENV === 'development') {
-                console.log('[payload-translations] Revalidation skipped (not in Next.js environment)')
+                console.log(
+                  '[payload-translations] Revalidation skipped (not in Next.js environment)',
+                )
               }
             }
           }

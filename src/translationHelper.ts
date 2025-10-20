@@ -32,7 +32,7 @@ function logMissingTranslations() {
     // Convert to camelCase to match common Payload naming conventions
     const fieldName = key
       .replace(/[^a-zA-Z0-9\s]+/g, '') // Remove special chars but keep spaces
-      .split(/\s+/)                     // Split on spaces
+      .split(/\s+/) // Split on spaces
       .map((word, index) => {
         const lower = word.toLowerCase()
         // First word lowercase, rest capitalize first letter
@@ -93,12 +93,16 @@ function sprintfInterpolate(template: string, values: any[]): string {
     const value = values[index++]
 
     switch (type) {
-      case 's': return String(value)
+      case 's':
+        return String(value)
       case 'd':
-      case 'i': return String(Math.floor(Number(value)))
+      case 'i':
+        return String(Math.floor(Number(value)))
       case 'f':
-      case 'u': return String(Number(value))
-      default: return match
+      case 'u':
+        return String(Number(value))
+      default:
+        return match
     }
   })
 }
@@ -112,7 +116,7 @@ function sprintfInterpolate(template: string, values: any[]): string {
 function icuInterpolate(
   template: string,
   variables: Record<string, any> = {},
-  locale: string = 'en'
+  locale: string = 'en',
 ): string {
   return template.replace(/\{([^}]+)\}/g, (match, expression) => {
     const parts = expression.split(',').map((p: string) => p.trim())
@@ -157,7 +161,7 @@ function icuInterpolate(
 function interpolate(
   template: string,
   variables: Record<string, any> | any[] = {},
-  locale: string = 'en'
+  locale: string = 'en',
 ): string {
   // Detect format based on variables type
   if (Array.isArray(variables)) {
@@ -191,7 +195,7 @@ export function createTranslationHelper(translations: Translations, locale: stri
   return function t(
     key: string,
     contextOrVars?: string | Record<string, any> | any[],
-    vars?: Record<string, any> | any[]
+    vars?: Record<string, any> | any[],
   ): string {
     // Parse arguments (context is optional)
     let context = 'General'
@@ -210,7 +214,8 @@ export function createTranslationHelper(translations: Translations, locale: stri
 
     for (const k of keys) {
       // Try camelCase version
-      const camelKey = k.replace(/\s+/g, '')
+      const camelKey = k
+        .replace(/\s+/g, '')
         .replace(/^(.)/, (m) => m.toLowerCase())
         .replace(/\s(.)/g, (m) => m.toUpperCase())
 
@@ -243,7 +248,7 @@ export function createTranslationHelper(translations: Translations, locale: stri
 export function formatDate(
   date: Date | string,
   locale: string = 'en',
-  style: 'full' | 'long' | 'medium' | 'short' = 'long'
+  style: 'full' | 'long' | 'medium' | 'short' = 'long',
 ): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date
 
@@ -269,7 +274,7 @@ export function formatDate(
 export function formatNumber(
   num: number,
   locale: string = 'en',
-  options?: Intl.NumberFormatOptions
+  options?: Intl.NumberFormatOptions,
 ): string {
   return new Intl.NumberFormat(locale, options).format(num)
 }
@@ -284,7 +289,7 @@ export function formatNumber(
 export function formatCurrency(
   amount: number,
   locale: string = 'en',
-  currency: string = 'EUR'
+  currency: string = 'EUR',
 ): string {
   return new Intl.NumberFormat(locale, {
     style: 'currency',

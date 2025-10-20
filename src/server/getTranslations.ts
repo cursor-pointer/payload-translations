@@ -1,6 +1,11 @@
 import { getPayload } from 'payload'
 import type { SanitizedConfig } from 'payload'
-import { createTranslationHelper, formatDate, formatNumber, formatCurrency } from '../translationHelper'
+import {
+  createTranslationHelper,
+  formatDate,
+  formatNumber,
+  formatCurrency,
+} from '../translationHelper'
 
 // Generic interface - users should extend this in their app
 export interface Translations {
@@ -42,7 +47,7 @@ export interface TranslationsHelper {
 export async function getTranslations(
   locale: string = 'en',
   config: SanitizedConfig | Promise<SanitizedConfig>,
-  slug: string = 'translations'
+  slug: string = 'translations',
 ): Promise<TranslationsHelper> {
   const payload = await getPayload({ config })
 

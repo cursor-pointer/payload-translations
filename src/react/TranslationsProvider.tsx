@@ -2,7 +2,12 @@
 
 import { createContext, useContext, useMemo } from 'react'
 import type { Translations } from '../server/getTranslations'
-import { createTranslationHelper, formatDate, formatNumber, formatCurrency } from '../translationHelper'
+import {
+  createTranslationHelper,
+  formatDate,
+  formatNumber,
+  formatCurrency,
+} from '../translationHelper'
 
 interface TranslationsContextValue {
   translations: Translations
@@ -49,11 +54,7 @@ export function TranslationsProvider({
     }
   }, [translations, locale])
 
-  return (
-    <TranslationsContext.Provider value={value}>
-      {children}
-    </TranslationsContext.Provider>
-  )
+  return <TranslationsContext.Provider value={value}>{children}</TranslationsContext.Provider>
 }
 
 /**

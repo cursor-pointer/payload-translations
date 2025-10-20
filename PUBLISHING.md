@@ -63,11 +63,13 @@ git push -u origin main
 ### 3. Create npm Account
 
 If you don't have one:
+
 ```bash
 npm adduser
 ```
 
 Or login:
+
 ```bash
 npm login
 ```
@@ -93,6 +95,7 @@ npm publish --access public
 Visit: https://payloadcms.com/community
 
 Create submission with:
+
 - Plugin name: `@cursorpointer/payload-translations`
 - Description: "Manage UI translations in Payload CMS with automatic string collection and full SSG support"
 - Tags: translations, i18n, localization, ssg
@@ -183,6 +186,7 @@ SOFTWARE.
 ## Support
 
 Set up support channels:
+
 - GitHub Issues for bug reports
 - GitHub Discussions for questions
 - Discord channel (optional)

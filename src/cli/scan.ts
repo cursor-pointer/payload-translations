@@ -57,7 +57,7 @@ async function scanFiles(pattern: string = 'src/**/*.{ts,tsx,js,jsx}'): Promise<
 function toCamelCase(str: string): string {
   return str
     .replace(/[^a-zA-Z0-9\s]+/g, '') // Remove special chars but keep spaces
-    .split(/\s+/)                     // Split on spaces
+    .split(/\s+/) // Split on spaces
     .map((word, index) => {
       const lower = word.toLowerCase()
       return index === 0 ? lower : lower.charAt(0).toUpperCase() + lower.slice(1)
@@ -175,7 +175,7 @@ function getExistingSections(content: string): Set<string> {
 function generateFieldDefinitionsNoDuplicates(
   translations: TranslationCall[],
   existingFields: Set<string>,
-  existingSections: Set<string>
+  existingSections: Set<string>,
 ): { output: string; addedCount: number } {
   const grouped = groupByContext(translations)
   const output: string[] = []
@@ -183,7 +183,7 @@ function generateFieldDefinitionsNoDuplicates(
 
   grouped.forEach((keys, context) => {
     // Filter out existing fields
-    const newKeys = Array.from(keys).filter(key => {
+    const newKeys = Array.from(keys).filter((key) => {
       const fieldName = toCamelCase(key)
       return !existingFields.has(fieldName)
     })
@@ -245,13 +245,15 @@ function appendToFile(filePath: string, translations: TranslationCall[]): void {
   const existingFields = getExistingFields(content)
   const existingSections = getExistingSections(content)
 
-  console.log(`   Found ${existingFields.size} existing fields in ${existingSections.size} sections`)
+  console.log(
+    `   Found ${existingFields.size} existing fields in ${existingSections.size} sections`,
+  )
 
   // Generate only new fields
   const { output: newFields, addedCount } = generateFieldDefinitionsNoDuplicates(
     translations,
     existingFields,
-    existingSections
+    existingSections,
   )
 
   if (addedCount === 0) {

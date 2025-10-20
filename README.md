@@ -80,7 +80,7 @@ export default buildConfig({
             { name: 'home', type: 'text', localized: true, required: true },
             { name: 'about', type: 'text', localized: true, required: true },
             { name: 'contact', type: 'text', localized: true, required: true },
-          ]
+          ],
         },
         {
           label: 'Authentication',
@@ -88,11 +88,11 @@ export default buildConfig({
             { name: 'loginButton', type: 'text', localized: true, required: true },
             { name: 'logoutButton', type: 'text', localized: true, required: true },
             { name: 'forgotPassword', type: 'text', localized: true, required: true },
-          ]
-        }
-      ]
-    })
-  ]
+          ],
+        },
+      ],
+    }),
+  ],
 })
 ```
 
@@ -105,7 +105,7 @@ import { getTranslations } from 'payload-translations/server'
 
 export default async function Layout({
   children,
-  params
+  params,
 }: {
   children: React.ReactNode
   params: Promise<{ locale: string }>
@@ -148,11 +148,7 @@ export function MyComponent() {
 import { getTranslations } from 'payload-translations/server'
 import config from '@/payload.config'
 
-export default async function Page({
-  params
-}: {
-  params: Promise<{ locale: string }>
-}) {
+export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
   const { t } = await getTranslations(locale, config)
 
@@ -169,7 +165,7 @@ export default async function Page({
 
 ```tsx
 const { translations } = await getTranslations(locale, config)
-return <h1>{translations.home}</h1>  // Type-safe
+return <h1>{translations.home}</h1> // Type-safe
 ```
 
 ### 4. Fill in translations
@@ -181,6 +177,7 @@ Go to `/admin/globals/translations` in your Payload admin panel and fill in tran
 ### Variables in translations
 
 **ICU MessageFormat (Object):**
+
 ```tsx
 // In your CMS, add field 'welcomeMessage' with value:
 // "Welcome back, {name}!"
@@ -191,6 +188,7 @@ const { t } = useTranslations()
 ```
 
 **Sprintf Style (Array):**
+
 ```tsx
 // In your CMS, add field 'welcomeMessage' with value:
 // "Welcome back, %s!"
@@ -203,6 +201,7 @@ const { t } = useTranslations()
 ### Pluralization
 
 **ICU MessageFormat (with automatic locale rules):**
+
 ```tsx
 // In your CMS, add field 'cartItems' with value:
 // "{count, plural, zero {No items} one {# item} other {# items}}"
@@ -214,6 +213,7 @@ const { t } = useTranslations()
 ```
 
 **Sprintf Style (simpler but manual):**
+
 ```tsx
 // Store both singular and plural in CMS, choose manually
 const { t } = useTranslations()
@@ -224,6 +224,7 @@ const count = 5
 ### Dynamic messages
 
 **ICU MessageFormat:**
+
 ```tsx
 // In your CMS, add field 'notification' with value:
 // "{user} liked your {type}"
@@ -234,6 +235,7 @@ const { t } = useTranslations()
 ```
 
 **Sprintf Style:**
+
 ```tsx
 // In your CMS, add field 'notification' with value:
 // "%s liked your %s"
@@ -255,16 +257,16 @@ translationsPlugin({
       fields: [
         { name: 'home', type: 'text', localized: true, required: true },
         { name: 'about', type: 'text', localized: true, required: true },
-      ]
+      ],
     },
     {
       label: 'Forms',
       fields: [
         { name: 'submit', type: 'text', localized: true, required: true },
         { name: 'cancel', type: 'text', localized: true, required: true },
-      ]
-    }
-  ]
+      ],
+    },
+  ],
 })
 ```
 
@@ -294,6 +296,7 @@ Organize fields into tabs for better admin UX.
 ```
 
 **Example:**
+
 ```typescript
 translationsPlugin({
   customFields: [
@@ -303,9 +306,9 @@ translationsPlugin({
         { name: 'loading', type: 'text', localized: true, required: true },
         { name: 'error', type: 'text', localized: true, required: true },
         { name: 'success', type: 'text', localized: true, required: true },
-      ]
-    }
-  ]
+      ],
+    },
+  ],
 })
 ```
 
@@ -328,6 +331,7 @@ const { t, translations, formatDate, formatNumber, formatCurrency, locale } =
 ```
 
 **Returns:**
+
 - `t(key, context?)` - WPML-style translation function
 - `translations` - Raw translations object
 - `formatDate()` - Locale-aware date formatting
@@ -341,12 +345,12 @@ React hook for accessing translations in client components.
 
 ```typescript
 const {
-  translations,  // Translation object
-  locale,        // Current locale
-  t,            // WPML-style helper function
-  formatDate,   // Locale-aware date formatting
+  translations, // Translation object
+  locale, // Current locale
+  t, // WPML-style helper function
+  formatDate, // Locale-aware date formatting
   formatNumber, // Locale-aware number formatting
-  formatCurrency // Locale-aware currency formatting
+  formatCurrency, // Locale-aware currency formatting
 } = useTranslations()
 ```
 
@@ -404,6 +408,7 @@ Familiar WordPress-style positional arguments:
 ```
 
 **Format Specifiers:**
+
 - `%s` - String
 - `%d` / `%i` - Integer (rounds down)
 - `%f` / `%u` - Float/Number
@@ -447,10 +452,10 @@ Locale-aware date formatting:
 ```typescript
 const { formatDate } = useTranslations()
 
-formatDate(new Date(), 'full')   // "Monday, January 15, 2025"
-formatDate(new Date(), 'long')   // "January 15, 2025"
+formatDate(new Date(), 'full') // "Monday, January 15, 2025"
+formatDate(new Date(), 'long') // "January 15, 2025"
 formatDate(new Date(), 'medium') // "Jan 15, 2025"
-formatDate(new Date(), 'short')  // "1/15/25"
+formatDate(new Date(), 'short') // "1/15/25"
 ```
 
 ### `formatNumber(num, options?)`
@@ -545,6 +550,7 @@ npx payload-translations scan "components/**/*.tsx" --write
 **Auto-detection of translation files:**
 
 When using `--write` without specifying a file, the CLI looks for:
+
 - `src/translations/fields.ts`
 - `src/translations/fields.js`
 - `src/translations/config.ts`
@@ -586,6 +592,7 @@ pnpm payload generate:types
 ### How it Works
 
 By default, translations are fetched when pages are rendered. In production with Next.js static generation:
+
 - Translations are fetched at **build time**
 - Results are cached in the static HTML
 - Changes in Payload admin require revalidation to appear
@@ -597,13 +604,16 @@ The plugin automatically revalidates all pages when translations change. **This 
 ```typescript
 translationsPlugin({
   revalidateOnChange: true, // ← Default! No setup needed
-  customFields: [/* ... */]
+  customFields: [
+    /* ... */
+  ],
 })
 ```
 
 **How it works automatically:**
 
 When you update translations in the Payload admin, the plugin:
+
 1. Detects the change via an internal `afterChange` hook
 2. Calls `revalidatePath('/', 'layout')` to revalidate all pages
 3. Next.js regenerates pages with the new translations
@@ -618,19 +628,23 @@ If you prefer manual control or aren't using Next.js:
 ```typescript
 translationsPlugin({
   revalidateOnChange: false, // Disable auto-revalidation
-  customFields: [/* ... */]
+  customFields: [
+    /* ... */
+  ],
 })
 ```
 
 ### Other Strategies
 
 **Time-Based ISR:**
+
 ```typescript
 // In your page/layout
 export const revalidate = 3600 // Revalidate every hour
 ```
 
 **Manual On-Demand Revalidation:**
+
 ```typescript
 // Create a webhook endpoint
 import { revalidatePath } from 'next/cache'
@@ -642,6 +656,7 @@ export async function POST() {
 ```
 
 **Dynamic Rendering (always fresh):**
+
 ```typescript
 // Force dynamic rendering for a specific page
 export const dynamic = 'force-dynamic'
