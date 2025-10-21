@@ -1,5 +1,15 @@
 # Publishing Guide for @cursorpointer/payload-translations
 
+## Release History
+
+### v0.8.2 (2025-01-21)
+- Updated Payload CMS peer dependency to support 3.60.0
+- Updated TypeScript to 5.9.3
+- Updated Vitest to 3.2.4
+
+### v0.8.1 (2025-01-14)
+- Initial stable release
+
 ## Pre-Publishing Checklist
 
 - [x] Package structure created
